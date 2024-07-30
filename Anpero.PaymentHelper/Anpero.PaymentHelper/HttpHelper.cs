@@ -28,9 +28,9 @@ namespace Anpero.PaymentHelper
                 {
                     return JsonSerializer.Deserialize<T?>(json);
                 }
-                catch (Exception ex)
+                catch 
                 {
-                    throw (ex);                    
+                    return default(T);
                 }
 
             }

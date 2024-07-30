@@ -10,7 +10,7 @@ namespace Anpero.PaymentHelper
 {
     public interface IAllPayment
     {
-        string? GetRedirectUrl(PaymentConfig config, OrderModel data);
-        Task<dynamic> GetCallBackData(string token);
+        CheckOutResultModel? GetCheckoutUrl(OrderModel data);
+        TransactionDetailModel ProcessCallBackData(string token);
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Anpero.PaymentHelper.Control.Alepay
-{   
+{
     internal class AlepayCheckout
     {
         private readonly bool IsTest;
@@ -18,7 +18,7 @@ namespace Anpero.PaymentHelper.Control.Alepay
             this.config = config;
         }
 
-        public string? GetRedirectUrl(OrderModel basicModel)
+        public CheckOutResultModel? GetCheckoutUrl(OrderModel basicModel)
         {
             basicModel.tokenKey = config.Token;
             AlepayUltil alepayUltil = new AlepayUltil();
@@ -26,24 +26,23 @@ namespace Anpero.PaymentHelper.Control.Alepay
             var postData = HttpHelper<AlepayCheckOutResultModel>.PostJson(IsTest ? "https://alepay-v3-sandbox.nganluong.vn/api/v3/checkout/request-payment" : "https://alepay-v3.nganluong.vn/api/v3/checkout/request-payment", basicModel);
             if (postData != null)
             {
-                if (!string.IsNullOrEmpty(postData?.code) && Convert.ToInt32(postData.code) == 0)
+                return new CheckOutResultModel
                 {
-                    return postData.checkoutUrl;
-                }
-                else
-                {
-                    return postData?.message;
-                }
+                    code = postData.code,
+                    checkoutUrl = postData.checkoutUrl,
+                    message = postData.message,
+                    signature = postData.signature
+                };              
             }
             return null;    
         }
-        public TransactionDetailModel? GetTransactionDetail(string transactionCode, string tokenKey, string checksumKey)
+        public TransactionDetailModel? GetTransactionDetail(string transactionCode)
         {
             AlepayUltil alepayUltil = new AlepayUltil();
             TransactionResultModel transaction = new TransactionResultModel();
             transaction.transactionCode = transactionCode;
-            transaction.tokenKey = tokenKey;
-            transaction.signature = alepayUltil.GetSignature(transaction, checksumKey);
+            transaction.tokenKey = config.Token;
+            transaction.signature = alepayUltil.GetSignature(transaction, config.ChecksumKey);
             return HttpHelper<TransactionDetailModel>.PostJson(IsTest ? "https://alepay-v3-sandbox.nganluong.vn/api/v3/checkout/get-transaction-info" : "https://alepay-v3.nganluong.vn/api/v3/checkout/get-transaction-info", transaction);
         }
         //public InstallmentModel? GetInstallmentInfo(double amount, string tokenKey, string checksumKey)

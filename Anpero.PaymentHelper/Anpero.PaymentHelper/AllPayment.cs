@@ -22,21 +22,27 @@ namespace Anpero.PaymentHelper
             IsTest = isTest;    
         }
 
-        public Task<dynamic> GetCallBackData(string token)
+        public TransactionDetailModel? ProcessCallBackData(string token)
         {
-
-
-            throw new NotImplementedException();
-        }
-        public string? GetRedirectUrl(PaymentConfig config, OrderModel data)
-        {         
-            switch (config.PaymentCode)
+            switch (PaymentConfig.PaymentCode)
             {
-                case "AL":
-                    AlepayCheckout client = new AlepayCheckout(IsTest, config);
-                    return client.GetRedirectUrl(data);
+                case PaymentCode.Alepay:
+                    AlepayCheckout client = new AlepayCheckout(IsTest, PaymentConfig);
+                    return client.GetTransactionDetail(token);
                 default:
-                    return string.Empty;
+                    return null;
+            }
+            
+        }
+        public CheckOutResultModel? GetCheckoutUrl(OrderModel data)
+        {         
+            switch (PaymentConfig.PaymentCode)
+            {
+                case PaymentCode.Alepay:
+                    AlepayCheckout client = new AlepayCheckout(IsTest, PaymentConfig);
+                    return client.GetCheckoutUrl(data);
+                default:
+                    return null;
             }
         }
     }

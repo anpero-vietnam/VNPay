@@ -4,6 +4,12 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>Anpero.PaymentHelper</PackageId>
+    <Title>Library supports payment gateways</Title>
+    <Copyright>Anpero</Copyright>
+    <PackageProjectUrl>https://github.com/anpero-vietnam/anpero-all-payment-library</PackageProjectUrl>
+    <Description>Payment Helper</Description>
   </PropertyGroup>
 
 </Project>
