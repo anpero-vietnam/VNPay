@@ -6,7 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Anpero.PaymentHelper.Control.Alepay
-{    
+{
+
     internal class AlepayUltil
     {
         public string GetSignature(object obj, string checkSumKey)
@@ -48,5 +49,5 @@ namespace Anpero.PaymentHelper.Control.Alepay
             }
         }
     }
-   
+
 }

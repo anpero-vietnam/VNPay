@@ -1,4 +1,5 @@
 ﻿using Anpero.PaymentHelper.Control.Alepay;
+using Anpero.PaymentHelper.Control.QR;
 using Anpero.PaymentHelper.Model;
 using Anpero.PaymentHelper.Model.Alepay;
 using System;
@@ -40,10 +41,15 @@ namespace Anpero.PaymentHelper
             {
                 case PaymentCode.Alepay:
                     AlepayCheckout client = new AlepayCheckout(IsTest, PaymentConfig);
-                    return client.GetCheckoutUrl(data);
+                    return client.GetCheckoutUrl(data);              
                 default:
                     return null;
             }
+        }
+        public CheckOutResultModel? GetQRCodeData(string bankAccountNumber, string bankId, string message, string amount, CurrencyCode currencyCode)
+        {
+            QRCodeGeneral qRCodeGeneral = new QRCodeGeneral(bankAccountNumber, bankId, message, amount, currencyCode); 
+            return qRCodeGeneral.Build();            
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Anpero.PaymentHelper
     public class PaymentCode
     {
         public const string Alepay = "AL";
+        public const string QRCodeData = "QR";
     }
 }
