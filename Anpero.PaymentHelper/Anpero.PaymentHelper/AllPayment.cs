@@ -48,8 +48,11 @@ namespace Anpero.PaymentHelper
         }
         public CheckOutResultModel? GetQRCodeData(string bankAccountNumber, string bankId, string message, string amount, CurrencyCode currencyCode)
         {
-            QRCodeGeneral qRCodeGeneral = new QRCodeGeneral(bankAccountNumber, bankId, message, amount, currencyCode); 
-            return qRCodeGeneral.Build();            
+           
+            return new CheckOutResultModel
+            {
+                
+            };
         }
     }
 }

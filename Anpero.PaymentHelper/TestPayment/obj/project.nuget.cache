@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rRJ1YRfbrFQAru7SGvQOm/tMqsvQAJ0nn9gpKg6hZcY3Tkk1kL5Aa0IMQVqQrbAmSV5VZ0hcjtPxV80rDjJpPg==",
+  "dgSpecHash": "r3Fz2R4NvgDWK2MDnDQpLRxm3d2hIJQgknMwrJCR/Zs6U66ML3Sjikfg21sg3ix8mu49fmR+4jRt/OUmE9FW5g==",
   "success": true,
-  "projectFilePath": "F:\\AnperoPayment\\Anpero.PaymentHelper\\TestPayment\\TestPayment.csproj",
+  "projectFilePath": "E:\\hub\\AnperoFrontend\\anpero-all-payment-library\\Anpero.PaymentHelper\\TestPayment\\TestPayment.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\thang\\.nuget\\packages\\coverlet.collector\\3.2.0\\coverlet.collector.3.2.0.nupkg.sha512",
     "C:\\Users\\thang\\.nuget\\packages\\microsoft.codecoverage\\17.5.0\\microsoft.codecoverage.17.5.0.nupkg.sha512",
@@ -30,8 +30,7 @@
     "C:\\Users\\thang\\.nuget\\packages\\system.runtime.extensions\\4.3.0\\system.runtime.extensions.4.3.0.nupkg.sha512",
     "C:\\Users\\thang\\.nuget\\packages\\system.text.encoding\\4.3.0\\system.text.encoding.4.3.0.nupkg.sha512",
     "C:\\Users\\thang\\.nuget\\packages\\system.threading\\4.3.0\\system.threading.4.3.0.nupkg.sha512",
-    "C:\\Users\\thang\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
-    "C:\\Users\\thang\\.nuget\\packages\\anpero.paymenthelper\\1.0.0\\anpero.paymenthelper.1.0.0.nupkg.sha512"
+    "C:\\Users\\thang\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512"
   ],
   "logs": []
 }

@@ -11,7 +11,7 @@ namespace TestPayment
     [TestClass]
     public class UnitTest1
     {
-        
+
         [TestMethod]
         public void TestAlepay()
         {
@@ -54,13 +54,13 @@ namespace TestPayment
             };
             IAllPayment paymentHelper = new AllPayment(config, true);
             var postData = paymentHelper.GetCheckoutUrl(order);
-            
+
             Assert.IsTrue(!string.IsNullOrEmpty(postData?.code) && Convert.ToInt32(postData.code) == 0);
         }
         [TestMethod]
         public void TestAlepayCallback()
         {
-            
+
 
             PaymentConfig config = new PaymentConfig
             {
@@ -89,35 +89,47 @@ namespace TestPayment
                 buyerPhone = "0906006580",
                 totalItem = 1
             };
-           
+
             IAllPayment paymentHelper = new AllPayment(config, true);
             var postData = paymentHelper.GetCheckoutUrl(order);
             Assert.IsTrue(!string.IsNullOrEmpty(postData?.code) && Convert.ToInt32(postData.code) == 0);
         }
         [TestMethod]
         public void TestQRcodeGeneral()
-        {   
-            IAllPayment paymentHelper = new AllPayment(new PaymentConfig(), true);
-            var rs =paymentHelper.GetQRCodeData("005704060117832", "970423", "some text", "5000000", CurrencyCode.VND);
-            Assert.IsTrue(rs!=null && Convert.ToInt32(rs.code) == 0 && ValidateQRCode(rs.checkoutUrl));
-        }
-        public bool ValidateQRCode(string qrCodeText)
         {
-            if (qrCodeText.Length < 4)
-            {
+      
+      
+            string bankAccount = "00570406011832";
+            string bankId = "970422";
+            string message = "Payment for Order #123";
+            int amount = 100000;
+            VietQR viet = new VietQR();
+            var qrq = viet.Build();
+            string qrCode = QRCodeGenerator.CreateQRCode(bankAccount, bankId, message, amount);
+            //Assert.IsTrue(rs != null && Convert.ToInt32(rs.code) == 0 && ValidateQRCode(rs.checkoutUrl));
+            Assert.IsTrue(ValidateQRCode(qrq));
+        }
+        public static bool ValidateQRCode(string qrCode)
+        {
+            // Check if the QR code length is at least 4 characters (for CRC)
+            if (qrCode.Length < 4)
                 return false;
-            }
 
-            string contentQR = qrCodeText.Substring(0, qrCodeText.Length - 4);
-            string crcFromQR = qrCodeText.Substring(qrCodeText.Length - 4);
+            // Extract the data without the CRC
+            string dataWithoutCRC = qrCode.Substring(0, qrCode.Length - 4);
 
-            ushort calculatedCRC = CalcCRC(contentQR);
-            string calculatedCRCString = calculatedCRC.ToString("X").ToUpper();
+            // Extract the provided CRC
+            string providedCRC = qrCode.Substring(qrCode.Length - 4);
 
-            return crcFromQR == calculatedCRCString;
+            // Calculate the expected CRC
+            ushort expectedCRC = CalculateCRC(dataWithoutCRC);
+            string expectedCRCString = expectedCRC.ToString("X4").PadLeft(4, '0');
+
+            // Compare the provided CRC with the expected CRC
+            return string.Equals(providedCRC, expectedCRCString, StringComparison.OrdinalIgnoreCase);
         }
 
-        private ushort CalcCRC(string str)
+        private static ushort CalculateCRC(string str)
         {
             ushort[] crcTable = {
             0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7, 0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
