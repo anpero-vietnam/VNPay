@@ -10,6 +10,7 @@
     <Copyright>Anpero</Copyright>
     <PackageProjectUrl>https://github.com/anpero-vietnam/anpero-all-payment-library</PackageProjectUrl>
     <Description>Payment Helper</Description>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>

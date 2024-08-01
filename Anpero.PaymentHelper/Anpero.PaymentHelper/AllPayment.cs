@@ -46,13 +46,21 @@ namespace Anpero.PaymentHelper
                     return null;
             }
         }
-        public CheckOutResultModel? GetQRCodeData(string bankAccountNumber, string bankId, string message, string amount, CurrencyCode currencyCode)
+        /// <summary>
+        /// Return QR data 
+        /// </summary>
+        /// <param name="bankAccount"></param>
+        /// <param name="bankId"></param>
+        /// <param name="message"></param>
+        /// <param name="amount"></param>
+        /// <param name="currency">Indicates the currency code of the transaction.</param>
+        /// <param name="service">[ISO 18245] Retail financial services—Merchant category codes</param>
+        /// <param name="countryCode"></param>
+        /// <param name="guid">Globally Unique  Identifier</param>
+        /// <returns></returns>
+        public CheckOutResultModel? GetQRCodeData(string bankAccount, string bankId, string message, string amount, CurrencyCode currency = CurrencyCode.VND, string service = "0208QRIBFTTA", string countryCode = "VN", string guid = "0010A000000727")
         {
-           
-            return new CheckOutResultModel
-            {
-                
-            };
+           return QRCodeGenerator.CreateQRCode(bankAccount, bankId, message, amount, currency, service, countryCode,guid);           
         }
     }
 }
