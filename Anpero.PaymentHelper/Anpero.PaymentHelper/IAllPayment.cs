@@ -21,7 +21,7 @@ namespace Anpero.PaymentHelper
         /// <param name="message"></param>
         /// <param name="amount">money</param>
         /// <returns></returns>
-        CheckOutResultModel? GetQRCodeData(string bankAccountNumber, string bankId,string message,string amount, CurrencyCode currency);
+        CheckOutResultModel? GetQRCodeData(string bankAccount, string bankId, string message, string amount, CurrencyCode currency = CurrencyCode.VND, string service = "0208QRIBFTTA", string countryCode = "VN", string guid = "0010A000000727");
         CheckOutResultModel? GetCheckoutUrl(OrderModel data);
         TransactionDetailModel ProcessCallBackData(string token);
     }

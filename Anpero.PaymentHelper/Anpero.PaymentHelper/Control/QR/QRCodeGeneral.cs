@@ -1,114 +1,87 @@
 ﻿
+using Anpero.PaymentHelper.Model;
 using System;
 using System.Runtime.Intrinsics.Arm;
 using System.Text;
 
 namespace Anpero.PaymentHelper.Control.QR
 {
-
-    public class VietQR
+    public class QRCodeGenerator
     {
-        private readonly string payloadFormatIndicator = "000201";
-        private readonly string pointOfInitiationMethod = "010212";
-        private string consumerAccountInformation = "";
-        private readonly string guid = "0010A000000727";
-        private readonly string serviceCode = "0208QRIBFTTA";
-        private readonly string transactionCurrency = "5303704";
-        private string transactionAmount = "100000";
-        private readonly string countryCode = "5802VN";
-        private string additionalDataFieldTemplate = "test";
-        private string crc = "";
-
-        private string ConvertLength(string str)
+        private static string ConvertLength(string str)
         {
             int num = int.Parse(str);
             return num < 10 ? $"0{num}" : num.ToString();
         }
 
-        public void SetTransactionAmount(string money)
+        private static string GetMerchantAccountInformation(string bankId, string bankAccount, string guid,string serviceCode)
+        {
+            string acquierLength = ConvertLength(bankId.Length.ToString());
+            string acquier = $"00{acquierLength}{bankId}";
+            string consumerLength = ConvertLength(bankAccount.Length.ToString());
+            string consumer = $"01{consumerLength}{bankAccount}";
+            string beneficiaryOrganizationLength = ConvertLength($"{acquier}{consumer}".Length.ToString());
+            int length = ($"{guid}01{beneficiaryOrganizationLength}{serviceCode}").Length;
+            string consumerAccountInformationLength = ConvertLength((int.Parse(beneficiaryOrganizationLength) + length).ToString());
+            
+            var rs = $"38{consumerAccountInformationLength}{guid}01{beneficiaryOrganizationLength}{acquier}{consumer}{serviceCode}";
+            return  $"38{consumerAccountInformationLength}{guid}01{beneficiaryOrganizationLength}{acquier}{consumer}{serviceCode}";
+
+        }
+        private static string GetTransactionAmount(string money)
         {
             string length = ConvertLength(money.Length.ToString());
-            transactionAmount = $"54{length}{money}";
-         
+            return $"54{length}{money}";// Amount with length
+
         }
-
-        public void SetBeneficiaryOrganization(string acquierID, string consumerID)
+        private static string GetAdditionalDataFieldTemplate(string content)
         {
-            string acquierLength = ConvertLength(acquierID.Length.ToString());
-            string acquier = $"00{acquierLength}{acquierID}";
-            string consumerLength = ConvertLength(consumerID.Length.ToString());
-            string consumer = $"01{consumerLength}{consumerID}";
-            string beneficiaryOrganizationLength = ConvertLength($"{acquier}{consumer}".Length.ToString());
-
-            string consumerAccountInformationLength = ConvertLength((int.Parse(beneficiaryOrganizationLength) + 30).ToString());
-            // 3853 0010A000000727012300069704230109mynamebvh0208QRIBFTTA
-            // 0010A000000727 --14 +2 
-            // 0208QRIBFTTA
-
-            consumerAccountInformation = $"38{consumerAccountInformationLength}{guid}01{beneficiaryOrganizationLength}{acquier}{consumer}{serviceCode}";
+            if (!string.IsNullOrEmpty(content)) {
+                if (content.Length > 99) {
+                    content = content.Substring(0, 98);
+                }
+                string contentLength = ConvertLength(content.Length.ToString());
+                string additionalDataFieldTemplateLength = ConvertLength((content.Length + 4).ToString());
+                return $"62{additionalDataFieldTemplateLength}08{contentLength}{content}";
+            }
+            else
+            {
+                return string.Empty;
+            }
             
         }
-
-        public void SetAdditionalDataFieldTemplate(string content)
-        {
-            string contentLength = ConvertLength(content.Length.ToString());
-            string additionalDataFieldTemplateLength = ConvertLength((content.Length + 4).ToString());
-            additionalDataFieldTemplate = $"62{additionalDataFieldTemplateLength}08{contentLength}{content}";
-           
-        }
-
-        
-        public string Build()
-        {
-            SetAdditionalDataFieldTemplate("test");
-            SetBeneficiaryOrganization("970422", "00570406011832");
-            
-            
-            SetTransactionAmount("1000000");
-
-            string contentQR = $"{payloadFormatIndicator}{pointOfInitiationMethod}{consumerAccountInformation}{transactionCurrency}{transactionAmount}{countryCode}{additionalDataFieldTemplate}6304";
-
-            ushort crc = CRC16.ComputeChecksum(contentQR);
-            string crcHex = crc.ToString("X4");
-            return contentQR + crcHex;
-        }
-    }
-    public class QRCodeGenerator
-    {
-        public static string CreateQRCode(string bankAccount, string bankId, string message, int amount, CurrencyCode currency = CurrencyCode.VND, string service = "0208QRIBFTTA", string countryCode = "VN", string guid = "A000000727")
+        public static CheckOutResultModel CreateQRCode(string bankAccount, string bankId, string message, string amount, CurrencyCode currency = CurrencyCode.VND, string service = "0208QRIBFTTA", string countryCode = "VN", string guid = "0010A000000727")
         {
             // Create the initial QR code content
             StringBuilder qrCodeContent = new StringBuilder();
             qrCodeContent.Append("000201"); // Payload Format Indicator
-            qrCodeContent.Append("010211"); // Point of Initiation Method
+            //11 = QR static – applied when the QR code allows multiple transactions.
+            //12 = Dynamic QR – applies when a QR code is allowed for a single transaction.
+            qrCodeContent.Append("010212"); // Point of Initiation Method
 
             // Merchant Account Information
-            qrCodeContent.Append("26"); // Merchant Account Information Template
-            qrCodeContent.Append("00"); // Bank Info ID (Assume default for simplicity)
-            qrCodeContent.Append($"{guid.Length:D2}{guid}"); // GUID with length
-            qrCodeContent.Append($"010{service.Length:D2}{service}"); // Service Length
-            qrCodeContent.Append($"02{bankAccount.Length:D2}{bankAccount}");
-
-            qrCodeContent.Append($"5802{countryCode}"); // Country Code
+            qrCodeContent.Append(GetMerchantAccountInformation(bankId, bankAccount, guid, service));
             qrCodeContent.Append($"5303{(int)currency:000}"); // Currency
-
-            string amountStr = amount.ToString();
-            qrCodeContent.Append($"54{amountStr.Length:00}{amountStr}"); // Amount with length
-
-            qrCodeContent.Append($"62{message.Length:D2}{message}"); // Additional Data Field Template
-            qrCodeContent.Append($"29{bankId.Length:D2}{bankId}"); // Bank ID
+            qrCodeContent.Append(GetTransactionAmount(amount));  // Amount with length
+            qrCodeContent.Append($"5802{countryCode}"); // Country Code
+            qrCodeContent.Append(GetAdditionalDataFieldTemplate(message));
 
             // Calculate CRC
             string qrCodeWithoutCRC = qrCodeContent.ToString() + "6304";
             ushort crc = CRC16.ComputeChecksum(qrCodeWithoutCRC);
             string crcHex = crc.ToString("X4");
-
-            return qrCodeWithoutCRC + crcHex;
-        }
-        
+            var qrData = qrCodeWithoutCRC + crcHex;
+            bool isValid = CRC16.ValidateQRCode(qrData);
+            return new CheckOutResultModel {
+                checkoutUrl = qrData,
+                code = isValid ? "0" : "-1",
+                message = isValid? "success":"failed, invalid qr code"
+                
+            };
+        }        
 
     }
-    public class CRC16
+    internal class CRC16
     {
         private static readonly ushort[] crcTable = new ushort[256];
 
@@ -144,6 +117,15 @@ namespace Anpero.PaymentHelper.Control.QR
                 crc = (ushort)((crc << 8) ^ crcTable[tableIndex]);
             }
             return crc;
+        }
+        public static bool ValidateQRCode(string qrData)
+        {         
+            if (qrData.Length < 4) return false;
+            string data = qrData.Substring(0, qrData.Length - 4);
+            string crcString = qrData.Substring(qrData.Length - 4);
+            ushort expectedCrc = Convert.ToUInt16(crcString, 16);
+            ushort computedCrc = ComputeChecksum(data);
+            return expectedCrc == computedCrc;
         }
     }
 }
