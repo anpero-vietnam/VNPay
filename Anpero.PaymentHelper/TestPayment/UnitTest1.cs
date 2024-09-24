@@ -61,7 +61,7 @@ namespace TestPayment
         public void TestAlepayCallback()
         {
 
-
+          
             PaymentConfig config = new PaymentConfig
             {
                 PaymentCode = PaymentCode.Alepay,
@@ -69,29 +69,10 @@ namespace TestPayment
                 ChecksumKey = "mGzAYcOtYlXJ7bcbmAkMgRZ5CsJvSN",
                 MerchantPassword = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCFkLliQPNHekG8T7PEI1l8P5kALF4pQUaLDWoclybS4WD2htd0ieN1covXlf"
             };
-            OrderModel order = new OrderModel
-            {
-                tokenKey = config.Token,
-                allowDomestic = true,
-                amount = 10000000,
-                buyerAddress = "Hoan Kiem",
-                buyerCity = "Ha Noi",
-                buyerCountry = "Viet Nam",
-                buyerEmail = "thangtd.hn@gmail.com",
-                customMerchantId = "OD01",
-                orderCode = "OD01",
-                orderDescription = "OD01",
-                returnUrl = "https://dynamic.anpero.com",
-                checkoutType = 3,
-                cancelUrl = @"https://dynamic.anpero.com",
-                currency = "vnd",
-                buyerName = "Trần Duy Thắng",
-                buyerPhone = "0906006580",
-                totalItem = 1
-            };
-
             IAllPayment paymentHelper = new AllPayment(config, true);
-            var postData = paymentHelper.GetCheckoutUrl(order);
+
+
+            var postData = paymentHelper.ProcessCallBackData("ALE00TFW3");
             Assert.IsTrue(!string.IsNullOrEmpty(postData?.code) && Convert.ToInt32(postData.code) == 0);
         }
         [TestMethod]

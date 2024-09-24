@@ -24,5 +24,6 @@ namespace Anpero.PaymentHelper.Model.Alepay
         //public string merchantFee { get; set; } = string.Empty;
         public string bankName { get; set; } = string.Empty;
         public double payerFee { get; set; } = 0;
+        public int? month { get; set; } =0;
     }
 }

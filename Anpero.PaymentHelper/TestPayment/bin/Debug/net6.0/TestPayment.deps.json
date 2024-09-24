@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "TestPayment/1.0.0": {
         "dependencies": {
-          "Anpero.PaymentHelper": "1.0.0",
+          "Anpero.PaymentHelper": "1.0.2",
           "MSTest.TestAdapter": "2.2.10",
           "MSTest.TestFramework": "2.2.10",
           "Microsoft.NET.Test.Sdk": "17.5.0",
@@ -431,7 +431,7 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "Anpero.PaymentHelper/1.0.0": {
+      "Anpero.PaymentHelper/1.0.2": {
         "runtime": {
           "Anpero.PaymentHelper.dll": {}
         }
@@ -641,7 +641,7 @@
       "path": "system.threading.tasks/4.3.0",
       "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
     },
-    "Anpero.PaymentHelper/1.0.0": {
+    "Anpero.PaymentHelper/1.0.2": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
